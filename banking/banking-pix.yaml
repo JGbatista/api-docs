@@ -16,13 +16,9 @@ tags:
 
 servers: [  
     {
-      "url": "https://api-beta.zoop.ws",
-      "description": "Produção"
-    },
-    {
       "url": "https://api.zoop.ws",
-      "description": "Produção Pix"
-    },    
+      "description": "Produção"
+    },  
     {
       "url": "https://apigw-sandbox.zoop.ws",
       "description": "Sandbox"
