@@ -4,7 +4,7 @@ info:
   version: "1.1"
 
 security:
- - basicAuth: [] 
+ - basicAuth: []
 
 tags:
  - name: Dict
@@ -20,13 +20,17 @@ servers: [
       "description": "Produção"
     },
     {
+      "url": "https://api.zoop.ws",
+      "description": "Produção Pix"
+    },    
+    {
       "url": "https://apigw-sandbox.zoop.ws",
       "description": "Sandbox"
     }
     ]
     
 paths:
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/entries":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/entries":
     parameters:
       - $ref: "#/components/parameters/XAuthTokenReading"
       - $ref: "#/components/parameters/XSessionToken"
@@ -125,7 +129,7 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/DictKeyResponse400'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}/ownership":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}/ownership":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -171,7 +175,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse412'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}/ownership/resend":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}/ownership/resend":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -212,7 +216,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse412'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}":
     get:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -330,7 +334,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse412'
 
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/claims":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/claims":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -423,7 +427,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse404'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/claims/{claim_id}":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/claims/{claim_id}":
     get:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -452,7 +456,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse404'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/claims/{claim_id}/cancel":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/claims/{claim_id}/cancel":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -487,7 +491,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse404'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/claims/{claim_id}/confirm":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/claims/{claim_id}/confirm":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -522,7 +526,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse404'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}/claims/":
+  "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/entries/{entry_id}/claims/":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -556,7 +560,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DictKeyResponse412'
 
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/payments":
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments":
     parameters:
       - $ref: "#/components/parameters/marketplaceID"
       - $ref: "#/components/parameters/holderID"
@@ -608,7 +612,115 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PixTransferError412Response'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}":
+                    
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/init":
+    parameters:
+      - $ref: "#/components/parameters/marketplaceID"
+      - $ref: "#/components/parameters/holderID"
+      - $ref: "#/components/parameters/accountID"
+      - $ref: "#/components/parameters/XAuthTokenReading"
+      - $ref: "#/components/parameters/XSessionToken"
+    post:
+      summary: Iniciliação de Pix por QRCode 
+      tags:
+        - Pagamentos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+               $ref: '#/components/schemas/pixInitRequest'
+                
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pixInitResponse'
+        '202':
+          description: Accepted - O pagamento foi iniciado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pixInitResponse'        
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/PixTransferError400Response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError404Response'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError412Response'
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/create":
+    parameters:
+      - $ref: "#/components/parameters/marketplaceID"
+      - $ref: "#/components/parameters/holderID"
+      - $ref: "#/components/parameters/accountID"
+      - $ref: "#/components/parameters/paymentID"      
+      - $ref: "#/components/parameters/XAuthTokenReading"
+      - $ref: "#/components/parameters/XSessionToken"
+    post:
+      summary: Criar pagamento de Pix pelo Id do Pagamento 
+      tags:
+        - Pagamentos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+               $ref: '#/components/schemas/pixCreateRequest'
+                
+      responses:
+        '201':
+          description: Created 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pixCreateResponse'
+        '202':
+          description: O pagamento foi criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pixCreateResponse'          
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/PixTransferError400Response'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError404Response'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError412Response'
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}":
     get:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -641,7 +753,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PixTransferError404Response'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/confirm":
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/scheduled":
+    get:
+      parameters:
+        - $ref: "#/components/parameters/marketplaceID"
+        - $ref: "#/components/parameters/holderID"
+        - $ref: "#/components/parameters/accountID"
+        - $ref: "#/components/parameters/start_date"
+        - $ref: "#/components/parameters/end_date"        
+        - $ref: "#/components/parameters/pageID"
+        - $ref: "#/components/parameters/sizeID"
+        - $ref: "#/components/parameters/XAuthTokenReading"
+        - $ref: "#/components/parameters/XSessionToken"
+      summary: Consultar pagamentos agendados Pix 
+      tags:
+        - Pagamentos
+      responses:
+        '200':
+          description: OK - A chave de endereçamento foi incluída com sucesso e está pronta para o uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pixScheduledResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/PixTransferError400Response'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError404Response'                
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/confirm":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -678,7 +824,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PixTransferError412Response'
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/cancel":
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/cancel":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
@@ -693,13 +839,13 @@ paths:
       responses:
         '200':
           description: OK 
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/payments/{transaction_id}/refunds":
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/refunds":
     post:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
         - $ref: "#/components/parameters/holderID"
         - $ref: "#/components/parameters/accountID"
-        - $ref: "#/components/parameters/transactionID"
+        - $ref: "#/components/parameters/paymentID"
         - $ref: "#/components/parameters/XAuthTokenReading"
         - $ref: "#/components/parameters/XSessionToken"
       summary: Devolver pagamento Pix 
@@ -723,7 +869,7 @@ paths:
         - $ref: "#/components/parameters/marketplaceID"
         - $ref: "#/components/parameters/holderID"
         - $ref: "#/components/parameters/accountID"
-        - $ref: "#/components/parameters/transactionID"
+        - $ref: "#/components/parameters/paymentID"
         - $ref: "#/components/parameters/pageID"
         - $ref: "#/components/parameters/sizeID"
       summary: Listar devoluções Pix 
@@ -732,13 +878,13 @@ paths:
       responses:
         '200':
           description: OK 
-  "/v3/marketplaces/{marketplace_id}/bankig/dict/holders/{holder_id}/accounts/{account_id}/payments/{transaction_id}/refunds/{refund_id}":
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/payments/{payment_id}/refunds/{refund_id}":
     get:
       parameters:
         - $ref: "#/components/parameters/marketplaceID"
         - $ref: "#/components/parameters/holderID"
         - $ref: "#/components/parameters/accountID"
-        - $ref: "#/components/parameters/transactionID"
+        - $ref: "#/components/parameters/paymentID"
         - $ref: "#/components/parameters/refundID"
         - $ref: "#/components/parameters/pageID"
         - $ref: "#/components/parameters/sizeID"
@@ -754,7 +900,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/pixRefundResponse'
-
+  "/v3/marketplaces/{marketplace_id}/banking/pix/holders/{holder_id}/accounts/{account_id}/qrcode/decode":
+    post:
+      parameters:
+        - $ref: "#/components/parameters/marketplaceID"
+        - $ref: "#/components/parameters/holderID"
+        - $ref: "#/components/parameters/accountID"
+        - $ref: "#/components/parameters/XAuthTokenReading"
+        - $ref: "#/components/parameters/XSessionToken"
+      summary: Decodificar QRCode Pix
+      tags:
+        - Pagamentos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/pixQrcodeRequest'        
+      responses:
+        '200':
+          description: OK - A chave de endereçamento foi incluída com sucesso e está pronta para o uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pixQrcodeResponse'
+        '201':
+          description: Created               
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/PixTransferError400Response'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError404Response'
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PixTransferError412Response'
 components:
   securitySchemes:
      basicAuth:
@@ -978,7 +1167,22 @@ components:
         required: true
         schema:
           type: string
-
+      start_date:
+        name: data de início
+        in: query
+        description: Indica o inicio do período 
+        required: true        
+        schema:
+          type: string
+          example: "2020-10-01 15:34:00"
+      end_date:
+        name: data fim
+        in: query
+        description: Indica o inicio do período
+        required: true        
+        schema:
+          type: string
+          example: "2020-10-01 15:34:00"
   schemas:
     DictKeyRequest:
       type: object
@@ -1036,7 +1240,7 @@ components:
             number:
               example: "456123"
             type:
-              example: "cacc"
+              example: tran
         psp:
           type: object
           properties:
@@ -1100,7 +1304,7 @@ components:
               example: "456123"
             type:
               type: string
-              example: "cacc"
+              example: "tran"
         psp:
           type: object
           properties:
@@ -1230,7 +1434,7 @@ components:
                   example: "456123"
                 type:
                   type: string
-                  example: "cacc"
+                  example: "tran"
             psp:
               type: object
               properties:
@@ -1312,7 +1516,7 @@ components:
                   example: "456123"
                 type:
                   type: string
-                  example: "cacc"
+                  example: "tran"
             name:
                type: string
                description: Representa o nome do recebedor - Parâmetro pertencente ao objeto creditor. 
@@ -1475,7 +1679,7 @@ components:
                   example: "456123"
                 type:
                   type: string
-                  example: "cacc"
+                  example: "tran"
         creditor:
           type: object
           properties:
@@ -1511,7 +1715,455 @@ components:
                   example: "600000"
                 type:
                   type: string
-                  example: "cacc"
+                  example: "tran"  
+    pixScheduledResponse:
+      type: object
+      properties:
+        amount:
+          type: string
+          example: "120.50"
+        creat_at:
+          type: string
+          example: "2021-07-16T13:59:19.305Z"          
+        creditor:
+          type: object
+          properties:        
+            account:
+              type: object
+              properties:
+                digital_account_id:
+                  type: string
+                  example: "3fa85f64-5717-4562-b3fc-2c963f66afa" 
+                number:
+                  type: string
+                  example: "600000"                  
+                psp:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 19468242
+                    name:
+                      type: string
+                      example: "Zoop"
+                routing_number:
+                  type: string
+                  example: "001"
+                type:
+                  type: string
+                  example: "tran"           
+            name:
+              type: string
+              example: Maria da Silva
+            national_registration:
+              type: string
+              example: "84154427008"
+            type:
+              type: string
+              example: "natural_person"
+            holder_id:
+              type: string
+              example: "ec1865e565a04bcab9994a395dd6393d"
+          
+        debtor:
+          type: object
+          properties:
+            name:
+              type: string
+              example: João da Silva
+            national_registration:
+              type: string
+              example: "33580667033"
+            type:
+              type: string
+              example: "natural_person"
+            holder_id:
+              type: string
+              example: "ec1865e565a04bcab9994a395dd6393d"
+            account:
+              type: object
+              properties:
+                psp:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 19468242
+                    name:
+                      type: string
+                      example: "Zoop Tecnologia e Meios de Pagamento S.A."
+                digital_account_id:
+                  type: string
+                  example: "0ce048eebf024b26957207c53430aabb"
+                routing_number:
+                  type: string
+                  example: "001"
+                number:
+                  type: string
+                  example: "456123"
+                type:
+                  type: string
+                  example: "tran"
+        description:
+          type: string
+          example: "Churrasco fim pandemia"          
+        end_to_end_id:
+          type: string
+          example: "E00038166201907261559y6j6mt9l0pi"
+        id:
+          type: string
+          example: "026b9c0e9fd34b32872906d5b64efbee"          
+        marketplace_id:
+          type: string
+          example: "0f8546897d6f41f4b3d81049693071ee"
+        payment_date:
+          type: string
+          example: "2021-06-30T00:00:00.000+00:00" 
+        refunded_amount:
+          type: number
+          example: 0            
+        status:
+          type: string
+          example: "pending"  
+        transaction_id:
+          type: string
+          example: "d747dc8fffec48a69830b40af4078fe1"                                    
+    pixInitRequest:
+     required:
+        - emv_code
+     type: object
+     properties:
+       emv_code:
+          type: string
+          description: Código EMV do QRCode a ser decodificado. 
+          example: 00020126570014BR.GOV.BCB.PIX0114607011900001040217Mensagem opcional52040000530398654041.225802BR5920Teste Batch atualiza6009SAO PAULO622605221t9OGEuUWlqWQiY0CU2YmA63048179
+       payment_date:
+          type: string
+          description: Data de pagamento
+          format: date
+          example: '2021-06-14T00:00:00.000+00:00'
+    pixInitResponse:
+      type: object
+      properties:
+        creditor:
+          type: object
+          properties:  
+            account:
+              type: object
+              properties:
+                digital_account_id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                number:
+                  type: number
+                  example: 9978856382
+                psp:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 19468242
+                    name:
+                      type: string
+                      example: zoop
+                routing_number:
+                  type: number
+                  example: 001
+                type:
+                  type: string
+                  example: tran
+
+            holder_id:
+              type: string
+              example: "5fa85f64-5717-4562-b3fc-2c963f66afa6" 
+            key:
+              type: object
+              properties: 
+                type:
+                  type: string
+                  example: phone   
+                value:
+                  type: string
+                  example: +5521123456789 
+            location:
+              type: object
+              properties: 
+                address:
+                  type: string
+                  example: Avenida das Américas, 700, Bloco 05, Sala 101, Barra da Tijuca   
+                city:
+                  type: string
+                  example: Rio de Janeiro  
+                state:
+                  type: string
+                  example: Rio de Janeiro
+                zip_code:
+                  type: string
+                  example: 22640100
+            name:
+              type: string
+              example: José das Coves
+            national_registration:
+              type: string
+              example: J38192246027
+            type:
+              type: string
+              example: Individual             
+        end_to_end_id:
+          type: string
+          example: "E00038166201907261559y6j6mt9l0pi"
+        id:
+          type: string
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        payment_date:
+          type: string
+          example: "2021-06-30T00:00:00.000+00:00"
+        qrcode:
+          type: object
+          properties:  
+            amount:
+              type: number
+              example: "10000"              
+            billing: 
+              type: object
+              properties: 
+                additional_infos:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "produto"
+                    value:
+                      type: string
+                      example: "bola de futebol"
+            amounts: 
+              type: object
+              properties: 
+                discount:
+                  type: string
+                  example: 0
+                fine:
+                  type: string
+                  example: 0
+                interest:
+                  type: string
+                  example: 0
+                original:
+                  type: string
+                  example: 0
+                reduction:
+                  type: string
+                  example: 0
+            calendar: 
+              type: object
+              properties: 
+                due_date:
+                  type: string
+                  example: "2020-11-25"
+                expires_at:
+                  type: string
+                  example: "2020-11-30T23:59:59.999Z"
+                overdue:
+                  type: string
+                  example: true
+                registered_at:
+                  type: string
+                  example: "2020-11-20T16:15:10.100Z" 
+            debtor: 
+              type: object
+              properties: 
+                name:
+                  type: string
+                  example: "Maria Flor"
+                national_registration:
+                  type: string
+                  example: "99267474006"
+                type:
+                  type: string
+                  example: "INDIVIDUAL"  
+            type: 
+              type: string
+              example: "instant"  
+        description:
+          type: string
+          example: "Churrasco"  
+        transaction_id:
+          type: string
+          example: "d747dc8fffec48a69830b40af4078fe1"          
+        type:
+          type: string
+          example: "static"
+    status:
+      type: string
+      example: "pending"  
+    pixCreateRequest:
+     required:
+        - amount
+     type: object
+     properties:
+       amount:
+          type: integer
+          description: Valor do pagamento em centavos. 
+          example: 120000
+    pixCreateResponse:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 0 
+        created_at:
+          type: string
+          example: "2021-07-15T14:07:37.177Z"
+        creditor:
+          type: object
+          properties:  
+            account:
+              type: object
+              properties:
+                digital_account_id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                number:
+                  type: number
+                  example: 9978856382
+                psp:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 19468242
+                    name:
+                      type: string
+                      example: zoop
+                routing_number:
+                  type: number
+                  example: 001
+                type:
+                  type: string
+                  example: tran
+            holder_id:
+              type: string
+              example: "5fa85f64-5717-4562-b3fc-2c963f66afa6" 
+            key:
+              type: object
+              properties: 
+                type:
+                  type: string
+                  example: phone   
+                value:
+                  type: string
+                  example: +5521123456789 
+            location:
+              type: object
+              properties: 
+                address:
+                  type: string
+                  example: Avenida das Américas, 700, Bloco 05, Sala 101, Barra da Tijuca   
+                city:
+                  type: string
+                  example: Rio de Janeiro  
+                state:
+                  type: string
+                  example: Rio de Janeiro
+                zip_code:
+                  type: string
+                  example: 22640100
+            name:
+              type: string
+              example: José das Coves
+            national_registration:
+              type: string
+              example: 58192246027
+            type:
+              type: string
+              example: Individual 
+        debitor:
+          type: object
+          properties:  
+            account:
+              type: object
+              properties:
+                digital_account_id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                number:
+                  type: number
+                  example: 9978856382
+                psp:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 19468242
+                    name:
+                      type: string
+                      example: zoop
+                routing_number:
+                  type: number
+                  example: 001
+                type:
+                  type: string
+                  example: tran
+            holder_id:
+              type: string
+              example: "7fa85f64-5717-4562-b3fc-2c963f66afa6" 
+            key:
+              type: object
+              properties: 
+                type:
+                  type: string
+                  example: phone   
+                value:
+                  type: string
+                  example: +5521123456789 
+            location:
+              type: object
+              properties: 
+                address:
+                  type: string
+                  example: Avenida das Américas, 700, Bloco 05, Sala 101, Barra da Tijuca   
+                city:
+                  type: string
+                  example: Rio de Janeiro  
+                state:
+                  type: string
+                  example: Rio de Janeiro
+                zip_code:
+                  type: string
+                  example: 22640100
+            name:
+              type: string
+              example: Maria das Coves
+            national_registration:
+              type: string
+              example: 48192246027
+            type:
+              type: string
+              example: Individual 
+        description:
+          type: string
+          example: "Descrição"                
+        end_to_end_id:
+          type: string
+          example: "E00038166201907261559y6j6mt9l0pi"      
+        id:
+          type: string
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        marketplace_id:
+          type: string
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"          
+        payment_date:
+          type: string
+          example: "2021-06-30T00:00:00.000+00:00" 
+        refund_amount:
+          type: number
+          example: 0  
+        status:
+          type: string
+          example: "pending"    
+        transaction_id:
+          type: string
+          example: "d747dc8fffec48a69830b40af4078fe1"  
     pixRefundRequest:
       title: Pix por dados da conta
       required:
@@ -1595,7 +2247,7 @@ components:
                           example: "Bradesco S.A."
                     type:
                       type: string
-                      example: "cacc"
+                      example: "tran"
                 name:
                   type: string
                   example: Maria da Silva
@@ -1653,7 +2305,7 @@ components:
                           example: "456123"
                         type:
                           type: string
-                          example: "cacc"
+                          example: "tran"
 
 
     PixTransferError400Response:
@@ -1761,3 +2413,213 @@ components:
         status_code:
           type: number
           example: 412
+    pixQrcodeRequest:
+     required:
+        - emv_code
+     type: object
+     properties:
+       emv_code:
+          type: string
+          description: Código EMV do QRCode a ser decodificado. 
+          example: 00020126570014BR.GOV.BCB.PIX0114607011900001040217Mensagem opcional52040000530398654041.225802BR5920Teste Batch atualiza6009SAO PAULO622605221t9OGEuUWlqWQiY0CU2YmA63048179  
+    pixQrcodeResponse:
+      type: object
+      properties:
+        amount:
+          type: number  
+          example: 10000   
+        billing:
+          type: object
+          properties:  
+              additional_infos:
+                type: object
+                properties:   
+                  name:
+                    type: string
+                    example: "produto"
+                  value:              
+                    type: string
+                    example: "bola de futebol" 
+              amounts: 
+                type: object
+                properties: 
+                  discount:
+                    type: number
+                    example: 0
+                  fine:
+                    type: number
+                    example: 0
+                  interest:
+                    type: number
+                    example: 0
+                  original:
+                    type: number
+                    example: 10000
+                  reduction:
+                    type: number
+                    example: 0 
+              calendar: 
+                type: object
+                properties: 
+                  due_date:
+                    type: string
+                    example: "2020-11-25"
+                  expires_at:
+                    type: string
+                    example: "2020-11-30T23:59:59.999Z"
+                  overdue:
+                    type: string
+                    example: true
+                  registered_at:
+                    type: string
+                    example: "2020-11-20T16:15:10.100Z" 
+              debtor: 
+                type: object
+                properties: 
+                  name:
+                    type: string
+                    example: "Maria Flor"
+                  national_registration:
+                    type: string
+                    example: "99267474006"
+                  type:
+                    type: string
+                    example: "INDIVIDUAL"  
+              type: 
+                type: string
+                example: "instant"                      
+        creditor:
+          type: object
+          properties:  
+            account:
+              type: object
+              properties:
+                digital_account_id:
+                  type: string
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                number:
+                  type: number
+                  example: 9978856382
+                psp:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                      example: 19468242
+                    name:
+                      type: string
+                      example: zoop
+                routing_number:
+                  type: number
+                  example: 001
+                type:
+                  type: string
+                  example: tran
+            holder_id:
+              type: string
+              example: "5fa85f64-5717-4562-b3fc-2c963f66afa6" 
+            key:
+              type: object
+              properties: 
+                type:
+                  type: string
+                  example: phone   
+                value:
+                  type: string
+                  example: +5521123456789 
+            location:
+              type: object
+              properties: 
+                address:
+                  type: string
+                  example: Avenida das Américas, 700, Bloco 05, Sala 101, Barra da Tijuca   
+                city:
+                  type: string
+                  example: Rio de Janeiro  
+                state:
+                  type: string
+                  example: Rio de Janeiro
+                zip_code:
+                  type: string
+                  example: 22640100
+            name:
+              type: string
+              example: José das Coves
+            national_registration:
+              type: string
+              example: J38192246027
+            type:
+              type: string
+              example: Individual   
+        description:
+          type: string
+          example: "Churrasco" 
+        qrcode:
+          type: object
+          properties:  
+              amount:
+                type: number
+                example: 10000
+              billing:
+                type: object                
+                properties:   
+                  additional_infos:
+                    type: object
+                    properties:   
+                      name:
+                        type: string
+                        example: "produto"
+                      value:              
+                        type: string
+                        example: "bola de futebol" 
+              amounts: 
+                type: object
+                properties: 
+                  discount:
+                    type: number
+                    example: 0
+                  fine:
+                    type: number
+                    example: 0
+                  interest:
+                    type: number
+                    example: 0
+                  original:
+                    type: number
+                    example: 10000
+                  reduction:
+                    type: number
+                    example: 0 
+              calendar: 
+                type: object
+                properties: 
+                  due_date:
+                    type: string
+                    example: "2020-11-25"
+                  expires_at:
+                    type: string
+                    example: "2020-11-30T23:59:59.999Z"
+                  overdue:
+                    type: string
+                    example: true
+                  registered_at:
+                    type: string
+                    example: "2020-11-20T16:15:10.100Z" 
+              debtor: 
+                type: object
+                properties: 
+                  name:
+                    type: string
+                    example: "Maria Flor"
+                  national_registration:
+                    type: string
+                    example: "99267474006"
+                  type:
+                    type: string
+                    example: "INDIVIDUAL"
+              type: 
+                type: string
+                example: "instant"         
+    transaction_id:
+      type: string
+      example: "d747dc8fffec48a69830b40af4078fe1"          
