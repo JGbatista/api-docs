@@ -16,7 +16,7 @@ tags:
 
 servers: [  
     {
-      "url": "https://api.zoop.ws",
+      "url": "https://api.zoop.ws", 
       "description": "Produção"
     },  
     {
