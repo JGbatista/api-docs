@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: Pix
-  version: "2.0"
+  version: "1.1"
 
 security:
  - basicAuth: []
@@ -14,9 +14,17 @@ tags:
  - name: Pagamentos
    description: Realiza pagamentos e transferências por Pix  
 
-servers:
-  - url: https://{ambiente}.zoop.ws
-
+servers: [  
+    {
+      "url": "https://api.zoop.ws",
+      "description": "Produção"
+    },    
+    {
+      "url": "https://apigw-sandbox.zoop.ws",
+      "description": "Sandbox"
+    }
+    ]
+    
 paths:
   "/v3/marketplaces/{marketplace_id}/banking/dict/holders/{holder_id}/accounts/{account_id}/entries":
     parameters:
@@ -1171,17 +1179,6 @@ components:
         schema:
           type: string
           example: "2020-10-01 15:34:00"
-      ambiente:
-        name: ambiente
-        in: path
-        description: servidor a ser executado
-        required: true
-        schema:
-          type: string
-          enum:
-            - api
-            - api-beta
-            - api-sandbox
   schemas:
     DictKeyRequest:
       type: object
@@ -2183,19 +2180,11 @@ components:
             code:
               type: string
               enum:
-              - AM05
-              - AM09
               - BE08
-              - DS28
-              - FOCR
               - FR01
               - MD06
-              - NARR
-              - RUTA
-              - SL11
-              - SL12
-              - UPAY
-              example: "AM05"
+              - SL02
+              example: "MD06"
     pixRefundResponse:
       type: object
       properties:
